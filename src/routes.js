@@ -25,10 +25,12 @@ router.post("/appointments", async (request, response) => {
     !appointment ||
     !appointment.doctor ||
     !appointment.date ||
-    !appointment.patient
+    !appointment.patient ||
+    !appointment.status
   ) {
     return response.status(400).json({
-      message: "required is falied because missing data or doctor, or patient",
+      message:
+        "required is falied because missing data or doctor, or patient, or status",
     });
   }
 

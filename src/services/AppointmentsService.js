@@ -1,19 +1,12 @@
-const dataBase = [
-  {
-    date: new Date("2023-11-02T12:27:38.684Z"),
-    doctor: "Ricardo",
-    patient: "Gabriel",
-  },
-  {
-    date: new Date("2023-11-03T12:27:38.684Z"),
-    doctor: "Ivan",
-    patient: "Isadora",
-  },
-];
+import { AppointmentModel } from "../models/AppointmentModel.js";
 
 export class AppointmentsService {
   async findAll() {
-    const appointments = dataBase;
+    const appointments = await AppointmentModel.findAll({
+      where: {
+        status: "marked",
+      },
+    });
     if (!appointments || !appointments.length) {
       return [];
     }
@@ -21,13 +14,13 @@ export class AppointmentsService {
   }
 
   async createAppointment(appointment) {
-    const tryFindDate = dataBase.find((ap) => {
-      return (
-        new Date(ap.date).getTime() === new Date(appointment.date).getTime()
-      );
+    const tryFindByDate = await AppointmentModel.findOne({
+      where: {
+        date: new Date(appointment.date),
+      },
     });
 
-    if (tryFindDate) {
+    if (tryFindByDate) {
       return { message: "alredy exists a equal date" };
     }
 
@@ -37,13 +30,13 @@ export class AppointmentsService {
       return { message: "Cannot create a appointment before the current time" };
     }
 
-    const newAppointment = {
+    const newAppointment = await AppointmentModel.create({
       date: appointment.date,
       doctor: appointment.doctor,
       patient: appointment.patient,
-    };
+      status: appointment.status,
+    });
 
-    dataBase.push(newAppointment);
     return newAppointment;
   }
 }
