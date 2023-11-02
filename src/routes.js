@@ -21,9 +21,14 @@ router.post("/appointments", async (request, response) => {
 
   const appointment = request.body;
 
-  if (!appointment || !appointment.description || !appointment.date) {
+  if (
+    !appointment ||
+    !appointment.doctor ||
+    !appointment.date ||
+    !appointment.patient
+  ) {
     return response.status(400).json({
-      message: "required is falied because missing data or description",
+      message: "required is falied because missing data or doctor, or patient",
     });
   }
 
