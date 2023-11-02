@@ -39,4 +39,32 @@ export class AppointmentsService {
 
     return newAppointment;
   }
+
+  async cancelAppointment(appointmentId) {
+    const appointment = await AppointmentModel.findOne({
+      where: {
+        id: appointmentId,
+      },
+    });
+
+    if (!appointment) {
+      return { message: "Cannot find this appointment" };
+    }
+
+    const tryUpdate = await AppointmentModel.update(
+      { status: "cancel" },
+      {
+        where: {
+          id: appointmentId,
+        },
+      }
+    );
+
+    if (!tryUpdate) {
+      return { message: "Cannot update this appointment" };
+    }
+    return {
+      message: "This appointment was canceled",
+    };
+  }
 }

@@ -45,4 +45,25 @@ router.post("/appointments", async (request, response) => {
   return response.status(500).json({ message: "internal error" });
 });
 
+router.post("/appointments/cancel", async (request, response) => {
+  const appointmentsService = new AppointmentsService();
+
+  const body = request.body;
+  if (!body || !body.id) {
+    return response.status(400).json({
+      message: "required is falied because missing id",
+    });
+  }
+
+  const updateAppointment = await appointmentsService.cancelAppointment(
+    body.id
+  );
+
+  if (updateAppointment) {
+    return response.json(updateAppointment);
+  }
+
+  return response.status(500).json({ message: "internal error" });
+});
+
 export { router };
